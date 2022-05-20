@@ -50,3 +50,59 @@ parents['fin'] = None
 
 # Список для отслеживания всех уже обработанных уз­лов
 processed = list()
+
+# Найти узел с наименьшей стоимостью
+# среди необработанных
+def find_lowest_cost_node(costs):
+    # назначаем максимальную стоимость узла
+    lowest_cost = float('inf')
+    # узел с наименьшей стоимостью
+    lowest_cost_node = None
+    # перебираем узлы в хэш-таблице стоимость (costs)
+    for node in costs:
+        # получаем стоимость текущего узла
+        cost = costs[node]
+        # если этот узел с наименьшей стоимостью
+        # из уже виденных и он еще не был обработан...
+        if cost < lowest_cost and node not in processed:
+            # ...он назначается новым кзлом
+            # с ноименьшей стоимостью
+            # (обновляем наименьшую стоимость)
+            lowest_cost = cost
+            # обновляем узел с наименьшей стоимостью
+            lowest_cost_node = node
+    return lowest_cost_node
+
+# Найти узел с наименьшей стоимостью
+# среди необработанных
+node = find_lowest_cost_node(costs)
+# test
+print('test node =', node)
+
+# если обработаны все узлы
+# то цикл while завершен
+while node is not None:
+    # берем стоимость узла
+    cost = costs[node]
+    # берем соседей узла
+    neighbors = graph[node]
+    # перебрать всех соседей текущего узла
+    for n in neighbors.keys():
+        # узнаем стоимость до соседа
+        new_cost = cost + neighbors[n]
+        # если к соседу можно быстрее добраться 
+        # через текущий узел
+        if costs[n] > new_cost:
+            # то обновить стоимость для этого узла
+            costs[n] = new_cost
+            # этот узел становится новым родителем для соседа
+            parents[n] = node
+    # узел помечается как обработанный
+    processed.append(node)
+    # найти следующий узел для обработки 
+    # и повторить цикл
+    node = find_lowest_cost_node(costs)
+
+# test
+print('test parents =', parents)
+print('test costs =', costs)
